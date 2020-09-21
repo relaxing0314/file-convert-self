@@ -1,0 +1,14 @@
+{
+  "name": "file-convert-self",
+  "version": "1.0.0",
+  "description": "文件流格式转化",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "文件流格式转换"
+  ],
+  "author": "relaxing0314",
+  "license": "ISC"
+}
