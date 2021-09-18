@@ -1,10 +1,25 @@
+// 判断数据类型
+function isType(type) {
+  return function (val) {
+    if (Object.prototype.toString.call(val) === `[object ${type}]`) {
+      return true
+    }
+    return false
+  }
+}
+var isFun = isType('Function')
+
 var FileConvert = {
   // file文件转换为base64，得到base64格式
   fileToBase64(files, callback) {
     var reader = new FileReader();
     reader.readAsDataURL(files[0]);
+    var base64File;
     reader.onload = function() {
-      callback(reader.result); // 获取到base64格式
+      base64File = reader.result;
+      if(isFun(callback)) {
+        callback(reader.result)
+      }
     };
     return base64File;
   },
@@ -47,9 +62,14 @@ var FileConvert = {
   blobToDataURI(blob, callback) {
     var reader = new FileReader();
     reader.readAsDataURL(blob);
+    var base64FileData;
     reader.onload = function (e) {
-      callback(e.target.result);
+      base64FileData = e.target.result
+      if(isFun(callback)) {
+        callback(e.target.result);
+      }
     }
+    return base64FileData;
   },
   // arrayBuffer格式转换为base64格式
   arrayBufferToBase64(arrayBufferData) {
@@ -62,7 +82,7 @@ var FileConvert = {
     return base64Url;
   },
   // arrayBuffer格式转换为blob格式
-  arrayBufferToBlob(arrayBufferData, callback) {
+  arrayBufferToBlob(arrayBufferData) {
 　　let blobData = new Blob([arrayBufferData], {type: 'application/octet-stream'})
     return blobData;
   }
