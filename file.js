@@ -10,6 +10,34 @@ function isType(type) {
 var isFun = isType('Function')
 
 var FileConvert = {
+  // file文件转blob url
+  fileToBlob(files, callback) {
+    var result = [];
+    for(var i = 0; i < files.length; i++) {
+      var blobUrl = URL.createObjectURL(files[i]);
+      result.push(blobUrl)
+    }
+    if(isFun(callback)) {
+      callback(result)
+    }
+    return result;
+  },
+  // file文件转base64
+  blobToBase(blobs, callback) {
+    var result = [];
+    for(var i = 0; i < blobs.length; i++) {
+      var reader = new FileReader();
+      reader.onload = function (evt) {
+        var base64 = evt.target.result;
+        result.push(base64);
+      };
+      reader.readAsDataURL(blob);
+    }
+    if(isFun(callback)) {
+      callback(result)
+    }
+    return result;
+  },
   // file文件转换为base64，得到base64格式
   fileToBase64(files, callback) {
     var reader = new FileReader();

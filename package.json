@@ -1,6 +1,6 @@
 {
   "name": "file-convert-self",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "文件流格式转化",
   "main": "index.js",
   "scripts": {
