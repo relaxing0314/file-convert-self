@@ -2,19 +2,40 @@
 function isType(type) {
   return function (val) {
     if (Object.prototype.toString.call(val) === `[object ${type}]`) {
-      return true
+      return true;
     }
-    return false
+    return false;
   }
 }
-var isFun = isType('Function')
+var isFun = isType('Function');
 
 var FileConvert = {
+  // 前端下载附件
+  downFile(data, type, fileName) {
+    const a = document.createElement('a');
+    if(type == 'arrayBuffer') {
+      const blob = FileConvert.arrayBufferToBlob(data);
+      a.href = window.URL.createObjectURL(blob);
+    }else if(type == 'file' || type == 'blob') {
+      a.href = window.URL.createObjectURL(data);
+    }else if(type == 'base64'){
+      const blob = FileConvert.dataURItoBlob(data, 'text/plain;charset=utf-8');
+      a.href = window.URL.createObjectURL(blob);
+    }
+    a.download = fileName;
+    a.click();
+  },
+  // 多文件下载
+  downFiles(list, type) {
+    list.map(({data, name}) => {
+      FileConvert.downFile(data, type, name);
+    })
+  },
   // file文件转blob url
-  fileToBlob(files, callback) {
+  fileToBlobUrl(files, callback) {
     var result = [];
     for(var i = 0; i < files.length; i++) {
-      var blobUrl = URL.createObjectURL(files[i]);
+      var blobUrl = window.URL.createObjectURL(files[i]);
       result.push(blobUrl)
     }
     if(isFun(callback)) {
@@ -31,7 +52,7 @@ var FileConvert = {
         var base64 = evt.target.result;
         result.push(base64);
       };
-      reader.readAsDataURL(blob);
+      reader.readAsDataURL(blobs[i]);
     }
     if(isFun(callback)) {
       callback(result)
@@ -62,7 +83,6 @@ var FileConvert = {
   },
   // base64转换为blob流
   dataURItoBlob(base64Data, mimeType) {
-    // console.log(base64Data); // data:image/png;base64,
     var byteString, mimeString;
     var base64DataArr = base64Data.split(',');
     if (base64DataArr.length == 1) {
@@ -110,8 +130,14 @@ var FileConvert = {
     return base64Url;
   },
   // arrayBuffer格式转换为blob格式
-  arrayBufferToBlob(arrayBufferData) {
-　　let blobData = new Blob([arrayBufferData], {type: 'application/octet-stream'})
+  arrayBufferToBlob(arrayBufferData, type) {
+    if(type == 'stream') {
+      const blobData = new Blob([arrayBufferData], {type: 'application/octet-stream'});
+      return blobData;
+    }
+    const blobData = new Blob([arrayBufferData], {
+      type: 'text/plain;charset=utf-8'
+    });
     return blobData;
   }
 }
